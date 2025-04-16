@@ -1,3 +1,6 @@
 # Ignora ambiente virtual
 venv/
 backups/
+dist/
+build/
+gera_processo.spec

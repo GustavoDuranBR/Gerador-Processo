@@ -1,4 +1,5 @@
 import os
+import sys
 import random
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
@@ -7,13 +8,24 @@ from faker import Faker
 from validate_docbr import CPF, CNPJ
 from datetime import datetime
 
+
 fake = Faker('pt_BR')
 cpf_gen = CPF()
 cnpj_gen = CNPJ()
 
+def resource_path(relative_path):
+    """Obtém o caminho absoluto, compatível com o PyInstaller"""
+    try:
+        base_path = sys._MEIPASS  # Quando estiver no .exe
+    except AttributeError:
+        base_path = os.path.abspath(".")  # Quando estiver rodando o .py
+    return os.path.join(base_path, relative_path)
+
 class GeradorApp(ttk.Window):
     def __init__(self):
         super().__init__(themename="darkly")
+        icon_path = resource_path("assets/icon_robot.ico")
+        self.iconbitmap(icon_path)
         self.title("Gerador de Dados Fakes para Processo")
         self.geometry("600x600")
         self.resizable(False, False)
