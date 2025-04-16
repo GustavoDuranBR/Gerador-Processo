@@ -1,0 +1,3 @@
+# Ignora ambiente virtual
+venv/
+backups/
