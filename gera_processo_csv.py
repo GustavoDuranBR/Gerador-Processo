@@ -24,11 +24,30 @@ class GeradorApp(ttk.Window):
 
     def __init__(self):
         super().__init__(themename="darkly")
-        self.title("Gerador QA GOD MODE – Processo Trabalhista")
+        icon_path = resource_path("assets/icon_robot.ico")
+        self.iconbitmap(icon_path)
+        self.title("Gerador Processo Trabalhista")
         self.geometry("600x500")
         self.resizable(False, False)
 
         self.registros_csv = []
+
+        # ==========================================
+        # MAPA VISUAL (NÃO ALTERA O JSON)
+        # ==========================================
+        self.labels_ui = {
+            "nrProcTrab": "Nº do Processo",
+            "nmTrab": "Nome",
+            "dtNascto": "Data Nascimento",
+            "perApurPgto": "Período Apuração",
+            "cpfTrab": "CPF",
+            "dtSent": "Data Sentença",
+            "dtDeslig": "Data Desligamento",
+            "dtRemun": "Data Remuneração",
+            "perRef1": "Período Ref. 1",
+            "perRef2": "Período Ref. 2",
+            "perRef3": "Período Ref. 3",
+        }
 
         container = ttk.Frame(self)
         container.pack(fill="both", expand=True, padx=10, pady=10)
@@ -83,7 +102,7 @@ class GeradorApp(ttk.Window):
         ttk.Label(self.left_panel, text="Quantidade de Registros").pack(anchor="w", pady=2)
 
         self.qtd_var = ttk.Spinbox(self.left_panel, from_=1, to=500)
-        self.qtd_var.set(5)
+        self.qtd_var.set(1)
         self.qtd_var.pack(fill="x")
 
         ttk.Button(
@@ -186,7 +205,6 @@ class GeradorApp(ttk.Window):
         }
 
     def gerar_registro(self):
-
         ano = self.ano_var.get()
 
         if self.random_per_apur.get():
@@ -203,7 +221,7 @@ class GeradorApp(ttk.Window):
 
         return {
             "nrProcTrab": self.gerar_num_processo(digitos, ano),
-            "nmTrab": fake.name(),
+            "nmTrab": f"{fake.first_name()} {fake.last_name()}",
             "dtNascto": fake.date_of_birth(minimum_age=18, maximum_age=65).strftime("%Y-%m-%d"),
             "perApurPgto": per_apur,
             "cpfTrab": cpf_gen.generate(),
@@ -253,9 +271,11 @@ class GeradorApp(ttk.Window):
                 command=lambda v=valor: self.copiar(v)
             ).pack(side="left")
 
+            label_exibicao = self.labels_ui.get(chave, chave)
+
             ttk.Label(
                 linha,
-                text=f"{chave}: {valor}",
+                text=f"{label_exibicao}: {valor}",
                 anchor="w"
             ).pack(side="left", fill="x", padx=6)
 
