@@ -41,6 +41,7 @@ class GeradorApp(ttk.Window):
             "dtNascto": "Data Nascimento",
             "perApurPgto": "Período Apuração",
             "cpfTrab": "CPF",
+            "cnpjAlfa": "CNPJ Alfanumérico",
             "dtSent": "Data Sentença",
             "dtDeslig": "Data Desligamento",
             "dtRemun": "Data Remuneração",
@@ -158,6 +159,15 @@ class GeradorApp(ttk.Window):
     def gerar_num_processo(self, digitos, ano):
         base = ''.join(str(random.randint(0, 9)) for _ in range(digitos - 4))
         return f"{base}{ano}"
+    
+    def gerar_cnpj_alfanumerico(self):
+        """
+        Gera CNPJ alfanumérico no formato 00.000.000/0000-00
+        """
+        base = ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=8))
+        filial = ''.join(random.choices('0123456789', k=4))
+        dv = ''.join(random.choices('0123456789', k=2))
+        return f"{base[:2]}.{base[2:5]}.{base[5:8]}/{filial}-{dv}"
 
     def gerar_per_apur_random(self):
         hoje = datetime.today()
@@ -225,6 +235,7 @@ class GeradorApp(ttk.Window):
             "dtNascto": fake.date_of_birth(minimum_age=18, maximum_age=65).strftime("%Y-%m-%d"),
             "perApurPgto": per_apur,
             "cpfTrab": cpf_gen.generate(),
+            "cnpjAlfa": self.gerar_cnpj_alfanumerico(),
 
             # 🔥 CAMPOS QA GOD MODE
             "dtSent": datas["dtSent"],
@@ -302,7 +313,7 @@ class GeradorApp(ttk.Window):
         with open(caminho, "w", encoding="utf-8") as f:
 
             f.write(
-                "nrProcTrab,nmTrab,dtNascto,perApurPgto,cpfTrab,dtSent,dtDeslig,dtRemun,perRef1,perRef2,perRef3\n"
+                "nrProcTrab,nmTrab,dtNascto,perApurPgto,cpfTrab,cnpjAlfa,dtSent,dtDeslig,dtRemun,perRef1,perRef2,perRef3\n"
             )
 
             for r in self.registros_csv:
@@ -312,6 +323,7 @@ class GeradorApp(ttk.Window):
                     f"{r['dtNascto']},"
                     f"{r['perApurPgto']},"
                     f"{r['cpfTrab']},"
+                    f"{r['cnpjAlfa']},"
                     f"{r['dtSent']},"
                     f"{r['dtDeslig']},"
                     f"{r['dtRemun']},"

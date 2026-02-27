@@ -97,6 +97,16 @@ class GeradorApp(ttk.Window):
     def gerar_processo(self, digitos, ano):
         numero_base = ''.join([str(random.randint(0, 9)) for _ in range(digitos - 4)])
         return f"{numero_base}{ano}"
+    
+    def gerar_cnpj_alfanumerico(self):
+        """
+        Gera um CNPJ alfanumérico mantendo o formato 00.000.000/0000-00
+        Substitui apenas os 8 primeiros caracteres por letras/números.
+        """
+        base = ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=8))
+        filial = ''.join(random.choices('0123456789', k=4))
+        dv = ''.join(random.choices('0123456789', k=2))
+        return f"{base[:2]}.{base[2:5]}.{base[5:8]}/{filial}-{dv}"
 
     def limpar_campos(self):
         for widget in self.frame_resultado.winfo_children():
@@ -135,6 +145,7 @@ class GeradorApp(ttk.Window):
         nascimento = fake.date_of_birth(minimum_age=18, maximum_age=65).strftime("%d/%m/%Y")
         cpf = cpf_gen.generate()
         cnpj = cnpj_gen.generate()
+        cnpj_alfanumerico = self.gerar_cnpj_alfanumerico()
 
         dados = {
             "Tipo de Processo": tipo,
@@ -142,7 +153,8 @@ class GeradorApp(ttk.Window):
             "Nome": nome,
             "Data de Nascimento": nascimento,
             "CPF": cpf,
-            "CNPJ": cnpj
+            "CNPJ": cnpj,
+            "CNPJ Alfanumérico": cnpj_alfanumerico
         }
 
         texto_backup = ""
