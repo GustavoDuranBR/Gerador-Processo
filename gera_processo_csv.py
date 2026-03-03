@@ -1,6 +1,7 @@
 import os
 import sys
 import random
+import string # Adicionado para manipulação de letras e números
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import messagebox
@@ -159,15 +160,42 @@ class GeradorApp(ttk.Window):
     def gerar_num_processo(self, digitos, ano):
         base = ''.join(str(random.randint(0, 9)) for _ in range(digitos - 4))
         return f"{base}{ano}"
-    
-    def gerar_cnpj_alfanumerico(self):
+
+    def gerar_cnpj_alfanumerico(self, qtd_letras=2):
         """
-        Gera CNPJ alfanumérico no formato 00.000.000/0000-00
+        Gera CNPJ alfanumérico matematicamente válido com letras na raiz.
         """
-        base = ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=8))
-        filial = ''.join(random.choices('0123456789', k=4))
-        dv = ''.join(random.choices('0123456789', k=2))
-        return f"{base[:2]}.{base[2:5]}.{base[5:8]}/{filial}-{dv}"
+        # 1. Gera uma base de 12 números (Raiz + Filial)
+        base = list(''.join(random.choices(string.digits, k=12)))
+        
+        # 2. Injeta letras apenas na RAIZ (os 8 primeiros dígitos)
+        posicoes = random.sample(range(8), k=qtd_letras)
+        for pos in posicoes:
+            base[pos] = random.choice(string.ascii_uppercase)
+            
+        base_str = ''.join(base)
+        
+        # 3. Função interna para calcular os DVs com a regra ASCII - 48
+        def calcular_dv(cnpj_parcial):
+            pesos = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+            pesos_atuais = pesos[-len(cnpj_parcial):]
+            
+            soma = 0
+            for char, peso in zip(cnpj_parcial, pesos_atuais):
+                valor = ord(char) - 48
+                soma += valor * peso
+                
+            resto = soma % 11
+            return '0' if resto < 2 else str(11 - resto)
+
+        # 4. Calcula e anexa os dois dígitos finais
+        dv1 = calcular_dv(base_str)
+        dv2 = calcular_dv(base_str + dv1)
+        
+        cnpj_modificado = base_str + dv1 + dv2
+        
+        # 5. Retorna com a máscara padrão
+        return f"{cnpj_modificado[:2]}.{cnpj_modificado[2:5]}.{cnpj_modificado[5:8]}/{cnpj_modificado[8:12]}-{cnpj_modificado[12:]}"
 
     def gerar_per_apur_random(self):
         hoje = datetime.today()
