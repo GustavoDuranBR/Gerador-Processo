@@ -1,8 +1,44 @@
-# Ignora ambiente virtual
+# ==========================
+# Ambiente Virtual
+# ==========================
 venv/
+.env/
+.venv/
+
+# ==========================
+# Pastas de runtime
+# ==========================
 backups/
 csv/
-dist/
+
+# ==========================
+# Build PyInstaller
+# ==========================
 build/
-gera_processo.spec
-gera_processo_csv.spec
+dist/
+*.spec
+
+# ==========================
+# Python cache
+# ==========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ==========================
+# Logs
+# ==========================
+*.log
+
+# ==========================
+# VSCode / IDE
+# ==========================
+.vscode/
+.idea/
+
+# ==========================
+# Sistema operacional
+# ==========================
+Thumbs.db
+.DS_Store
