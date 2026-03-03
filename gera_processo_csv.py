@@ -25,8 +25,8 @@ class GeradorApp(ttk.Window):
 
     def __init__(self):
         super().__init__(themename="darkly")
-        icon_path = resource_path("assets/icon_robot.ico")
-        self.iconbitmap(icon_path)
+        #icon_path = resource_path("assets/icon_robot.ico")
+        #self.iconbitmap(icon_path)
         self.title("Gerador Processo Trabalhista")
         self.geometry("600x500")
         self.resizable(False, False)
